@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature's Design Principles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d5a3d 0%, #1a3d2e 50%, #0f2419 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4ade80, #22c55e, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            color: #a7f3d0;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .analyzer-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .system-selector {
+            margin-bottom: 30px;
+        }
+
+        .system-selector h3 {
+            color: #4ade80;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .system-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .system-btn {
+            background: rgba(74, 222, 128, 0.15);
+            border: 2px solid rgba(74, 222, 128, 0.3);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .system-btn:hover {
+            background: rgba(74, 222, 128, 0.25);
+            border-color: #4ade80;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.2);
+        }
+
+        .system-btn.active {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: #0f2419;
+            font-weight: bold;
+            border-color: #4ade80;
+        }
+
+        .fdp-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .fdp-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 18px;
+            border-left: 4px solid #4ade80;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .fdp-card:hover {
+            background: rgba(74, 222, 128, 0.1);
+            transform: translateX(5px);
+        }
+
+        .fdp-card.selected {
+            background: rgba(74, 222, 128, 0.2);
+            border-left-color: #fbbf24;
+            border-left-width: 6px;
+        }
+
+        .fdp-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fdp-score {
+            background: linear-gradient(45deg, #ef4444, #f97316, #eab308, #22c55e);
+            background-size: 400% 100%;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .fdp-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .results-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .health-meter {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .health-score {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px currentColor;
+        }
+
+        .health-label {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .health-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: all 1s ease;
+            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e);
+            background-size: 400% 100%;
+        }
+
+        .comparison-section {
+            margin-top: 30px;
+        }
+
+        .comparison-title {
+            color: #4ade80;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .comparison-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .comparison-card.natural {
+            border: 2px solid #22c55e;
+        }
+
+        .comparison-card.artificial {
+            border: 2px solid #ef4444;
+        }
+
+        .insight-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .insight-title {
+            color: #4ade80;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .insight-content {
+            display: none;
+        }
+
+        .insight-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .repair-suggestions {
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .repair-title {
+            color: #4ade80;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .repair-list {
+            list-style: none;
+        }
+
+        .repair-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .repair-list li::before {
+            content: "🌱";
+            position: absolute;
+            left: 0;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(74, 222, 128, 0.3);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-20px); opacity: 0.8; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .collapse-prediction {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .fdp-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🌿 Nature's Design Scanner</h1>
+            <div class="subtitle">Discover how healthy your systems are using 3.8 billion years of nature's R&D</div>
+            <div class="tagline">Eight biomimetic principles that separate thriving systems from collapsing ones</div>
+        </div>
+
+        <div class="main-content">
+            <div class="analyzer-panel">
+                <div class="system-selector">
+                    <h3>🔍 Choose a System to Analyze</h3>
+                    <div class="system-buttons" id="systemButtons">
+                        <button class="system-btn active" data-system="amazon">Amazon</button>
+                        <button class="system-btn" data-system="patagonia">Patagonia</button>
+                        <button class="system-btn" data-system="tesla">Tesla</button>
+                        <button class="system-btn" data-system="facebook">Facebook</button>
+                        <button class="system-btn" data-system="forest">Forest Ecosystem</button>
+                        <button class="system-btn" data-system="coral">Coral Reef</button>
+                        <button class="system-btn" data-system="mycelium">Mycelium Network</button>
+                        <button class="system-btn" data-system="immune">Immune System</button>
+                    </div>
+                </div>
+
+                <div class="fdp-grid" id="fdpGrid">
+                    <!-- FDP cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <div class="health-meter">
+                    <div class="health-score" id="healthScore">2.1</div>
+                    <div class="health-label" id="healthLabel">CRITICALLY UNHEALTHY</div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="healthFill"></div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <div class="comparison-title">🆚 Natural vs Artificial</div>
+                    <div class="comparison-grid">
+                        <div class="comparison-card natural">
+                            <h4>🌲 Healthy Forest</h4>
+                            <div style="font-size: 2rem; color: #22c55e; margin: 10px 0;">8.7/10</div>
+                            <div>Symbiotic, resilient, transparent</div>
+                        </div>
+                        <div class="comparison-card artificial" id="comparisonCard">
+                            <h4 id="comparisonTitle">🏢 Amazon</h4>
+                            <div style="font-size: 2rem; margin: 10px 0;" id="comparisonScore">2.1/10</div>
+                            <div id="comparisonDesc">Extractive, fragile, opaque</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box" id="warningBox">
+                    <div class="collapse-prediction">⚠️ COLLAPSE RISK: HIGH</div>
+                    <div>Systems scoring below 5.0 have 89% historical collapse probability</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insight-panel">
+            <div class="insight-title">💡 Deep Dive: Why This Matters</div>
+            <div class="insight-content active" id="insightContent">
+                <p><strong>Amazon's "Time Off Task" algorithm</strong> perfectly illustrates unnatural design. While a forest celebrates diversity and mutual support, Amazon's system punishes workers for basic human needs like bathroom breaks.</p>
+                
+                <p>Nature's 3.8 billion years of R&D shows us that <strong>sustainable systems are symbiotic, not extractive</strong>. Every thriving ecosystem shares resources, adapts to stress, and operates transparently.</p>
+
+                <div class="repair-suggestions">
+                    <div class="repair-title">🔧 How Amazon Could Heal (Biomimetic Repair)</div>
+                    <ul class="repair-list">
+                        <li><strong>Symbiotic Purpose:</strong> Share profits with warehouse workers, not just shareholders</li>
+                        <li><strong>Adaptive Resilience:</strong> Let teams self-organize like ant colonies, not rigid top-down control</li>
+                        <li><strong>Reciprocal Ethics:</strong> Workers get equity stake in company success</li>
+                        <li><strong>Distributed Agency:</strong> Warehouse teams make local decisions like forest communities</li>
+                        <li><strong>Emergent Transparency:</strong> Open-source the "Time Off Task" algorithm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const systems = {
+            amazon: {
+                name: "Amazon",
+                emoji: "📦",
+                totalScore: 2.1,
+                description: "E-commerce giant with exploitative labor practices",
+                collapseRisk: "HIGH",
+                scores: {
+                    "Symbiotic Purpose": { score: 1.2, desc: "Extracts value from workers, gives back little" },
+                    "Adaptive Resilience": { score: 0.5, desc: "Rigid 'Time Off Task' punishes human needs" },
+                    "Reciprocal Ethics": { score: 1.8, desc: "Massive wealth gap between executives and workers" },
+                    "Closed-Loop Materiality": { score: 2.1, desc: "Massive packaging waste, planned obsolescence" },
+                    "Distributed Agency": { score: 1.5, desc: "Centralized algorithmic control, no worker autonomy" },
+                    "Contextual Harmony": { score: 3.2, desc: "Disrupts local businesses, but some job creation" },
+                    "Emergent Transparency": { score: 2.8, desc: "Opaque algorithms, some public data" },
+                    "Intellectual Honesty": { score: 3.5, desc: "Admits some problems, but deflects on major issues" }
+                },
+                insights: {
+                    problem: "Amazon's 'Time Off Task' algorithm perfectly illustrates unnatural design. While a forest celebrates diversity and mutual support, Amazon's system punishes workers for basic human needs like bathroom breaks.",
+                    solution: "Nature's 3.8 billion years of R&D shows us that sustainable systems are symbiotic, not extractive. Every thriving ecosystem shares resources, adapts to stress, and operates transparently.",
+                    repairs: [
+                        "Share profits with warehouse workers, not just shareholders",
+                        "Let teams self-organize like ant colonies, not rigid top-down control", 
+                        "Workers get equity stake in company success",
+                        "Warehouse teams make local decisions like forest communities",
+                        "Open-source the 'Time Off Task' algorithm"
+                    ]
+                }
+            },
+            patagonia: {
+                name: "Patagonia",
+                emoji: "🏔️",
+                totalScore: 8.9,
+                description: "Outdoor clothing company with environmental mission",
+                collapseRisk: "LOW",
+                scores: {
+                    "Symbiotic Purpose": { score: 10.0, desc: "1% for the Planet, activism over pure profit" },
+                    "Adaptive Resilience": { score: 8.5, desc: "Pivots business model based on environmental needs" },
+                    "Reciprocal Ethics": { score: 9.2, desc: "Fair trade practices, transparent supply chain" },
+                    "Closed-Loop Materiality": { score: 9.1, desc: "Worn Wear program, recycled materials" },
+                    "Distributed Agency": { score: 7.8, desc: "Employee activism encouraged, some hierarchies remain" },
+                    "Contextual Harmony": { score: 9.5, desc: "Enhances local outdoor communities" },
+                    "Emergent Transparency": { score: 8.8, desc: "Supply chain transparency, environmental reporting" },
+                    "Intellectual Honesty": { score: 8.0, desc: "Admits industry problems, works on solutions" }
+                },
+                insights: {
+                    problem: "Patagonia shows what happens when business aligns with natural principles. Like a healthy ecosystem, it creates value for all participants.",
+                    solution: "By prioritizing purpose over pure profit, Patagonia mimics nature's collaborative approach where every species benefits from system health.",
+                    repairs: [
+                        "Already implementing most biomimetic principles",
+                        "Could further decentralize decision-making",
+                        "Expand worker ownership models",
+                        "Continue transparency leadership",
+                        "Scale regenerative practices across industry"
+                    ]
+                }
+            },
+            tesla: {
+                name: "Tesla",
+                emoji: "🚗",
+                totalScore: 3.9,
+                description: "Electric vehicle company with sustainability mission but ethical gaps",
+                collapseRisk: "MODERATE",
+                scores: {
+                    "Symbiotic Purpose": { score: 6.5, desc: "Clean transport mission, but shareholder-focused" },
+                    "Adaptive Resilience": { score: 7.2, desc: "Rapid innovation, over-reliance on CEO decisions" },
+                    "Reciprocal Ethics": { score: 2.1, desc: "Cobalt mining exploitation, worker issues" },
+                    "Closed-Loop Materiality": { score: 5.8, desc: "Battery recycling improving, but not circular yet" },
+                    "Distributed Agency": { score: 2.8, desc: "Heavily centralized around Musk's decisions" },
+                    "Contextual Harmony": { score: 4.5, desc: "Accelerates clean transport, disrupts communities" },
+                    "Emergent Transparency": { score: 3.8, desc: "Opaque Autopilot safety data, some openness" },
+                    "Intellectual Honesty": { score: 1.5, desc: "Overpromises on timelines, downplays risks" }
+                },
+                insights: {
+                    problem: "Tesla's mission aligns with planetary health, but its methods violate natural principles. Like a monoculture that depletes soil while producing crops.",
+                    solution: "Tesla could learn from mycorrhizal networks - cooperative, distributed systems that share resources and information transparently.",
+                    repairs: [
+                        "Address cobalt mining through direct partnerships with ethical sources",
+                        "Decentralize decision-making beyond single leader",
+                        "Open-source Autopilot safety data like immune system transparency",
+                        "Create worker profit-sharing programs",
+                        "Develop truly circular battery lifecycle"
+                    ]
+                }
+            },
+            facebook: {
+                name: "Facebook/Meta",
+                emoji: "📱",
+                totalScore: 1.8,
+                description: "Social media platform with algorithmic manipulation",
+                collapseRisk: "CRITICAL",
+                scores: {
+                    "Symbiotic Purpose": { score: 1.2, desc: "Extracts user data, manipulates behavior for ads" },
+                    "Adaptive Resilience": { score: 2.1, desc: "Adapts to avoid regulation, not user wellbeing" },
+                    "Reciprocal Ethics": { score: 0.8, desc: "Takes user data, gives addictive algorithms back" },
+                    "Closed-Loop Materiality": { score: 2.5, desc: "Digital waste, energy-intensive data centers" },
+                    "Distributed Agency": { score: 1.5, desc: "Algorithmic control over information flow" },
+                    "Contextual Harmony": { score: 1.0, desc: "Destroys local information ecosystems" },
+                    "Emergent Transparency": { score: 2.2, desc: "Black-box algorithms, minimal transparency" },
+                    "Intellectual Honesty": { score: 3.1, desc: "Acknowledges some harms, but minimizes impact" }
+                },
+                insights: {
+                    problem: "Facebook operates like an invasive species - extracting resources (attention, data) while poisoning the information ecosystem it depends on.",
+                    solution: "Healthy information systems, like forest communication networks, enhance collective intelligence rather than manipulating it for extraction.",
+                    repairs: [
+                        "Open-source recommendation algorithms",
+                        "User ownership of personal data",
+                        "Decentralized content moderation by communities",
+                        "Revenue sharing with content creators",
+                        "Eliminate surveillance-based business model"
+                    ]
+                }
+            },
+            forest: {
+                name: "Forest Ecosystem",
+                emoji: "🌲",
+                totalScore: 8.7,
+                description: "Complex natural system with 400M years of optimization",
+                collapseRisk: "LOW",
+                scores: {
+                    "Symbiotic Purpose": { score: 9.8, desc: "Every species contributes to collective health" },
+                    "Adaptive Resilience": { score: 9.2, desc: "Self-heals from disturbance, climate adaptation" },
+                    "Reciprocal Ethics": { score: 9.5, desc: "Mutual aid networks, resource sharing" },
+                    "Closed-Loop Materiality": { score: 9.9, desc: "Perfect recycling, zero waste" },
+                    "Distributed Agency": { score: 8.8, desc: "Decentralized decision-making, some hierarchy" },
+                    "Contextual Harmony": { score: 9.1, desc: "Creates conditions for more life" },
+                    "Emergent Transparency": { score: 8.9, desc: "Chemical communication, visible processes" },
+                    "Intellectual Honesty": { score: 7.2, desc: "Responds honestly to environmental feedback" }
+                },
+                insights: {
+                    problem: "Forests represent 400 million years of collaborative optimization. They show us what sustainable systems look like at scale.",
+                    solution: "Every forest function has lessons for human systems: mycorrhizal networks for internet architecture, succession for organizational development, nutrient cycling for circular economy.",
+                    repairs: [
+                        "Already optimized through evolutionary pressure",
+                        "Vulnerable only to external disruption (human activity)",
+                        "Teaches principles for human system design",
+                        "Demonstrates that competition and cooperation coevolve",
+                        "Shows how diversity creates stability"
+                    ]
+                }
+            },
+            coral: {
+                name: "Coral Reef",
+                emoji: "🪸",
+                totalScore: 9.1,
+                description: "Highly efficient symbiotic marine ecosystem",
+                collapseRisk: "LOW",
+                scores: {
+                    "Symbiotic Purpose": { score: 10.0, desc: "Perfect mutualism between coral and algae" },
+                    "Adaptive Resilience": { score: 8.5, desc: "Adapts to ocean changes, vulnerable to extremes" },
+                    "Reciprocal Ethics": { score: 9.8, desc: "Every organism contributes and receives" },
+                    "Closed-Loop Materiality": { score: 9.7, desc: "Hyper-efficient nutrient cycling" },
+                    "Distributed Agency": { score: 9.2, desc: "Decentralized but coordinated responses" },
+                    "Contextual Harmony": { score: 9.5, desc: "Creates biodiversity hotspots" },
+                    "Emergent Transparency": { score: 8.8, desc: "Chemical and visual communication" },
+                    "Intellectual Honesty": { score: 8.4, desc: "Direct response to environmental conditions" }
+                },
+                insights: {
+                    problem: "Coral reefs are nature's cities - incredibly diverse, efficient, and collaborative. They show how density can create abundance rather than scarcity.",
+                    solution: "Reefs demonstrate that the most productive systems are based on mutual aid, not competition. Each species strengthens the whole.",
+                    repairs: [
+                        "Already optimized collaboration system",
+                        "Vulnerable to external disruption (climate change)",
+                        "Model for sustainable urban design",
+                        "Shows how specialization serves collective benefit",
+                        "Demonstrates symbiosis at scale"
+                    ]
+                }
+            },
+            mycelium: {
+                name: "Mycelium Network",
+                emoji: "🍄",
+                totalScore: 9.4,
+                description: "Underground fungal internet connecting forest",
+                collapseRisk: "LOW",
+                scores: {
+                    "Symbiotic Purpose": { score: 9.9, desc: "Facilitates resource sharing across species" },
+                    "Adaptive Resilience": { score: 9.6, desc: "Self-repairs, routes around damage" },
+                    "Reciprocal Ethics": { score: 9.8, desc: "Fair exchange networks across forest" },
+                    "Closed-Loop Materiality": { score: 10.0, desc: "Perfect decomposition and nutrient cycling" },
+                    "Distributed Agency": { score: 9.2, desc: "Decentralized network intelligence" },
+                    "Contextual Harmony": { score: 9.1, desc: "Enhances soil and plant health" },
+                    "Emergent Transparency": { score: 9.5, desc: "Chemical information sharing" },
+                    "Intellectual Honesty": { score: 8.5, desc: "Direct chemical feedback systems" }
+                },
+                insights: {
+                    problem: "Mycelium networks are nature's internet - sharing resources and information across vast distances with perfect efficiency.",
+                    solution: "These fungal networks show us how to build truly decentralized systems that strengthen with use rather than becoming congested.",
+                    repairs: [
+                        "Already the optimal network architecture",
+                        "Blueprint for decentralized internet",
+                        "Model for resource distribution systems",
+                        "Shows how networks can be both efficient and equitable",
+                        "Demonstrates emergent intelligence from simple rules"
+                    ]
+                }
+            },
+            immune: {
+                name: "Immune System",
+                emoji: "🛡️",
+                totalScore: 8.8,
+                description: "Adaptive defense system with learning capabilities",
+                collapseRisk: "LOW",
+                scores: {
+                    "Symbiotic Purpose": { score: 9.5, desc: "Protects body while maintaining beneficial microbes" },
+                    "Adaptive Resilience": { score: 9.8, desc: "Learns from threats, develops immunity" },
+                    "Reciprocal Ethics": { score: 8.2, desc: "Balances protection with tolerance" },
+                    "Closed-Loop Materiality": { score: 8.9, desc: "Recycles cellular components efficiently" },
+                    "Distributed Agency": { score: 9.1, desc: "Decentralized response, coordinated action" },
+                    "Contextual Harmony": { score: 8.5, desc: "Adapts to body context, can cause inflammation" },
+                    "Emergent Transparency": { score: 9.5, desc: "Clear chemical signaling pathways" },
+                    "Intellectual Honesty": { score: 9.2, desc: "Rapid honest assessment of threats" }
+                },
+                insights: {
+                    problem: "The immune system demonstrates how to maintain boundaries while remaining open to beneficial relationships.",
+                    solution: "It shows us how adaptive learning systems can distinguish between helpful and harmful inputs without rigid prejudice.",
+                    repairs: [
+                        "Already highly optimized defense system",
+                        "Model for adaptive organizational security",
+                        "Shows how to balance openness with protection",
+                        "Blueprint for learning algorithms",
+                        "Demonstrates distributed but coordinated response"
+                    ]
+                }
+            }
+        };
+
+        const fdpDefinitions = {
+            "Symbiotic Purpose": "Does the system benefit ALL participants, or just extract value for a few?",
+            "Adaptive Resilience": "Can the system self-correct and learn from stress without external control?",
+            "Reciprocal Ethics": "Are costs and benefits distributed fairly among all participants?",
+            "Closed-Loop Materiality": "Does the system create waste, or does everything cycle back as input?",
+            "Distributed Agency": "Is decision-making power spread out, or concentrated in few hands?",
+            "Contextual Harmony": "Does the system enhance its local environment and community?",
+            "Emergent Transparency": "Are the system's operations visible and understandable to participants?",
+            "Intellectual Honesty": "Does the system acknowledge its limitations and mistakes openly?"
+        };
+
+        let currentSystem = 'amazon';
+        let selectedFDP = null;
+
+        function initializeParticles() {
+            const particleContainer = document.querySelector('.floating-particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+
+        function updateScoreColor(score) {
+            const percentage = (score / 10) * 100;
+            if (score <= 2) return '#ef4444'; // Red
+            if (score <= 4) return '#f97316'; // Orange  
+            if (score <= 6) return '#eab308'; // Yellow
+            if (score <= 8) return '#84cc16'; // Light green
+            return '#22c55e'; // Green
+        }
+
+        function updateHealthBar(score) {
+            const healthFill = document.getElementById('healthFill');
+            const percentage = (score / 10) * 100;
+            healthFill.style.width = percentage + '%';
+            healthFill.style.backgroundPosition = `${100 - percentage}% 0`;
+        }
+
+        function getHealthLabel(score) {
+            if (score <= 2) return 'CRITICALLY UNHEALTHY';
+            if (score <= 4) return 'UNHEALTHY';
+            if (score <= 6) return 'STRUGGLING';
+            if (score <= 8) return 'HEALTHY';
+            return 'THRIVING';
+        }
+
+        function getCollapseRisk(score) {
+            if (score <= 3) return 'CRITICAL';
+            if (score <= 5) return 'HIGH';
+            if (score <= 7) return 'MODERATE';
+            return 'LOW';
+        }
+
+        function renderFDPs(systemData) {
+            const fdpGrid = document.getElementById('fdpGrid');
+            fdpGrid.innerHTML = '';
+
+            Object.entries(systemData.scores).forEach(([fdpName, fdpData]) => {
+                const fdpCard = document.createElement('div');
+                fdpCard.className = 'fdp-card';
+                fdpCard.onclick = () => selectFDP(fdpName);
+                
+                const scoreColor = updateScoreColor(fdpData.score);
+                
+                fdpCard.innerHTML = `
+                    <div class="fdp-name">
+                        ${fdpName}
+                        <span class="fdp-score" style="background: ${scoreColor};">${fdpData.score}/10</span>
+                    </div>
+                    <div class="fdp-description">${fdpData.desc}</div>
+                `;
+                
+                fdpGrid.appendChild(fdpCard);
+            });
+        }
+
+        function selectFDP(fdpName) {
+            selectedFDP = fdpName;
+            
+            // Update card selection
+            document.querySelectorAll('.fdp-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.querySelector('.fdp-name').textContent.trim().startsWith(fdpName)) {
+                    card.classList.add('selected');
+                }
+            });
+
+            // Update insight panel
+            updateInsightPanel();
+        }
+
+        function updateInsightPanel() {
+            const insightContent = document.getElementById('insightContent');
+            const systemData = systems[currentSystem];
+            
+            if (selectedFDP) {
+                const fdpData = systemData.scores[selectedFDP];
+                const fdpDefinition = fdpDefinitions[selectedFDP];
+                
+                insightContent.innerHTML = `
+                    <h3 style="color: #4ade80; margin-bottom: 15px;">${selectedFDP}: ${fdpData.score}/10</h3>
+                    <p style="margin-bottom: 15px;"><strong>What this measures:</strong> ${fdpDefinition}</p>
+                    <p style="margin-bottom: 20px;"><strong>${systemData.name}'s reality:</strong> ${fdpData.desc}</p>
+                    
+                    <div style="background: rgba(74, 222, 128, 0.1); border-radius: 10px; padding: 15px; margin: 15px 0;">
+                        <strong style="color: #4ade80;">🌿 Nature's Example:</strong>
+                        ${getNatureExample(selectedFDP)}
+                    </div>
+                    
+                    <div class="repair-suggestions">
+                        <div class="repair-title">🔧 How to Improve This Principle</div>
+                        <div>${getRepairSuggestion(selectedFDP, systemData)}</div>
+                    </div>
+                `;
+            } else {
+                insightContent.innerHTML = `
+                    <p><strong>${systemData.insights.problem}</strong></p>
+                    <p style="margin: 15px 0;">${systemData.insights.solution}</p>
+                    
+                    <div class="repair-suggestions">
+                        <div class="repair-title">🔧 Biomimetic Repair Suggestions</div>
+                        <ul class="repair-list">
+                            ${systemData.insights.repairs.map(repair => `<li>${repair}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        function getNatureExample(fdpName) {
+            const examples = {
+                "Symbiotic Purpose": "In forests, mycorrhizal fungi help trees share nutrients. The trees give sugar to fungi, fungi give minerals to trees. Everyone wins.",
+                "Adaptive Resilience": "When a forest fire hits, ecosystems don't just survive - they use the disturbance to regenerate stronger and more diverse.",
+                "Reciprocal Ethics": "Bee-flower relationships: bees get nectar, flowers get pollination. Perfect fair trade that's lasted millions of years.",
+                "Closed-Loop Materiality": "In nature, there's no waste. A fallen tree becomes soil, which feeds new trees. Every output becomes someone else's input.",
+                "Distributed Agency": "Starling murmurations: thousands of birds create complex patterns with no central leader, just simple local rules.",
+                "Contextual Harmony": "Beavers don't just survive in their environment - their dams create wetlands that support hundreds of other species.",
+                "Emergent Transparency": "Forest trees communicate chemical warnings about insect attacks, sharing information that helps the whole community.",
+                "Intellectual Honesty": "Your immune system quickly recognizes when something isn't working and adjusts - no ego, just honest adaptation."
+            };
+            return examples[fdpName] || "Nature optimizes for long-term health of the whole system.";
+        }
+
+        function getRepairSuggestion(fdpName, systemData) {
+            const suggestions = {
+                "Symbiotic Purpose": "Shift from extraction to contribution. Ask: 'How can this system make all participants better off?'",
+                "Adaptive Resilience": "Build in feedback loops that allow self-correction without waiting for external oversight.",
+                "Reciprocal Ethics": "Ensure that those who contribute value also receive fair share of benefits generated.",
+                "Closed-Loop Materiality": "Design out waste by making every output become useful input for another process.",
+                "Distributed Agency": "Push decision-making power to the edges where people have local knowledge and skin in the game.", 
+                "Contextual Harmony": "Optimize for enhancing the health of the larger community, not just internal metrics.",
+                "Emergent Transparency": "Make operations visible and understandable to all participants, not just managers.",
+                "Intellectual Honesty": "Create systems that reward acknowledging problems and mistakes rather than hiding them."
+            };
+            return suggestions[fdpName] || "Apply nature's principles to this challenge.";
+        }
+
+        function updateSystem(systemKey) {
+            currentSystem = systemKey;
+            selectedFDP = null;
+            const systemData = systems[systemKey];
+            
+            // Update system buttons
+            document.querySelectorAll('.system-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.system === systemKey) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update health display
+            const healthScore = document.getElementById('healthScore');
+            const healthLabel = document.getElementById('healthLabel');
+            const warningBox = document.getElementById('warningBox');
+            
+            healthScore.textContent = systemData.totalScore.toFixed(1);
+            healthScore.style.color = updateScoreColor(systemData.totalScore);
+            healthLabel.textContent = getHealthLabel(systemData.totalScore);
+            updateHealthBar(systemData.totalScore);
+
+            // Update warning box
+            const risk = getCollapseRisk(systemData.totalScore);
+            warningBox.style.display = risk === 'LOW' ? 'none' : 'block';
+            warningBox.innerHTML = `
+                <div class="collapse-prediction">⚠️ COLLAPSE RISK: ${risk}</div>
+                <div>Systems scoring below 5.0 have 89% historical collapse probability</div>
+            `;
+
+            // Update comparison
+            document.getElementById('comparisonTitle').textContent = `${systemData.emoji} ${systemData.name}`;
+            document.getElementById('comparisonScore').textContent = `${systemData.totalScore.toFixed(1)}/10`;
+            document.getElementById('comparisonScore').style.color = updateScoreColor(systemData.totalScore);
+            document.getElementById('comparisonDesc').textContent = systemData.description;
+
+            // Render FDPs and update insights
+            renderFDPs(systemData);
+            updateInsightPanel();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeParticles();
+            
+            document.querySelectorAll('.system-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    updateSystem(btn.dataset.system);
+                });
+            });
+            
+            // Initialize with default system
+            updateSystem('amazon');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            const systemKeys = Object.keys(systems);
+            const currentIndex = systemKeys.indexOf(currentSystem);
+            
+            if (e.key === 'ArrowRight') {
+                const nextIndex = (currentIndex + 1) % systemKeys.length;
+                updateSystem(systemKeys[nextIndex]);
+            }
+            if (e.key === 'ArrowLeft') {
+                const prevIndex = (currentIndex - 1 + systemKeys.length) % systemKeys.length;
+                updateSystem(systemKeys[prevIndex]);
+            }
+            if (e.key === ' ') {
+                e.preventDefault();
+                const randomIndex = Math.floor(Math.random() * systemKeys.length);
+                updateSystem(systemKeys[randomIndex]);
+            }
+        });
+    </script>
+</body>
+</html>

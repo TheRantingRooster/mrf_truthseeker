@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7ES Framework Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #a8edea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .explorer-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .elements-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .element-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .element-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .element-card.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #ffd700;
+            transform: scale(1.02);
+        }
+
+        .element-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .element-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .element-preview {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .content-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 500px;
+        }
+
+        .element-detail {
+            display: none;
+        }
+
+        .element-detail.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .detail-header {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .examples-section {
+            margin-top: 25px;
+        }
+
+        .examples-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .example-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+
+        .scale-demo {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .scale-slider {
+            width: 100%;
+            margin: 20px 0;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .scale-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+        }
+
+        .scale-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scale-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .recursive-viz {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .fractal-demo {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .fractal-demo:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .explorer-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .scale-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>The 7ES Framework</h1>
+            <div class="subtitle">Discover How Everything is a System - From Atoms to Galaxies</div>
+            <div class="subtitle">🚀 Interactive exploration of the universal framework that explains all complex systems</div>
+        </div>
+
+        <div class="explorer-container">
+            <div class="elements-panel">
+                <h3 style="margin-bottom: 20px; text-align: center;">The 7 Universal Elements</h3>
+                
+                <div class="element-card active" data-element="0">
+                    <span class="element-number">1</span>
+                    <div class="element-name">Input</div>
+                    <div class="element-preview">What enters the system</div>
+                </div>
+
+                <div class="element-card" data-element="1">
+                    <span class="element-number">2</span>
+                    <div class="element-name">Output</div>
+                    <div class="element-preview">What the system produces</div>
+                </div>
+
+                <div class="element-card" data-element="2">
+                    <span class="element-number">3</span>
+                    <div class="element-name">Processing</div>
+                    <div class="element-preview">How inputs become outputs</div>
+                </div>
+
+                <div class="element-card" data-element="3">
+                    <span class="element-number">4</span>
+                    <div class="element-name">Controls</div>
+                    <div class="element-preview">Rules that guide behavior</div>
+                </div>
+
+                <div class="element-card" data-element="4">
+                    <span class="element-number">5</span>
+                    <div class="element-name">Feedback</div>
+                    <div class="element-preview">Information about performance</div>
+                </div>
+
+                <div class="element-card" data-element="5">
+                    <span class="element-number">6</span>
+                    <div class="element-name">Interface</div>
+                    <div class="element-preview">Boundaries and connections</div>
+                </div>
+
+                <div class="element-card" data-element="6">
+                    <span class="element-number">7</span>
+                    <div class="element-name">Environment</div>
+                    <div class="element-preview">Everything surrounding the system</div>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div class="element-detail active" id="detail-0">
+                    <div class="detail-header">
+                        <span class="element-number">1</span>
+                        Input: The Gateway
+                    </div>
+                    <div class="detail-description">
+                        Input is everything that enters your system from the outside world. Think of it as the raw material that gets your system moving - like fuel in a car, food in your body, or data in a computer.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">🌟 Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Visual signals, sounds, thoughts, emotions entering your consciousness</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Customers, coffee beans, water, electricity, staff arriving</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Cosmic radiation, asteroids, comets entering from interstellar space</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="element-detail" id="detail-1">
+                    <div class="detail-header">
+                        <span class="element-number">2</span>
+                        Output: The Purpose
+                    </div>
+                    <div class="detail-description">
+                        Output is what your system creates and sends back to the world. It's the reason the system exists - the value it adds, the change it makes, the energy it releases.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">🎯 Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Decisions, movements, speech, creative ideas, memories</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Hot coffee, satisfied customers, revenue, community gathering space</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Planetary motion, heat/light radiation, gravitational influence on nearby stars</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="element-detail" id="detail-2">
+                    <div class="detail-header">
+                        <span class="element-number">3</span>
+                        Processing: The Magic
+                    </div>
+                    <div class="detail-description">
+                        Processing is where the transformation happens - the mysterious "black box" where inputs become outputs. It's metabolism in your body, thinking in your brain, brewing in a coffee shop.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">⚡ Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Neural firing, pattern recognition, memory formation, emotional processing</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Grinding beans, brewing coffee, taking orders, creating atmosphere</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Gravitational interactions, orbital mechanics, energy transfer between bodies</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="element-detail" id="detail-3">
+                    <div class="detail-header">
+                        <span class="element-number">4</span>
+                        Controls: The Rules
+                    </div>
+                    <div class="detail-description">
+                        Controls are the built-in rules and constraints that keep your system working properly. They're like the guardrails that prevent chaos - DNA in cells, laws in society, physics in the universe.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">🎛️ Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Neural pathways, cognitive biases, instinctive responses, learned habits</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Recipes, health codes, business hours, pricing policies, staff procedures</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Laws of physics, gravitational constants, conservation of energy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="element-detail" id="detail-4">
+                    <div class="detail-header">
+                        <span class="element-number">5</span>
+                        Feedback: The Learning Loop
+                    </div>
+                    <div class="detail-description">
+                        Feedback is how your system learns and adapts. It's the information that comes back from your outputs, telling you whether you're on track or need to adjust course.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">🔄 Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Pain signals, satisfaction, success/failure experiences, social reactions</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Customer reviews, sales data, repeat customers, staff observations</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Gravitational perturbations, orbital adjustments, tidal effects</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="element-detail" id="detail-5">
+                    <div class="detail-header">
+                        <span class="element-number">6</span>
+                        Interface: The Boundary
+                    </div>
+                    <div class="detail-description">
+                        Interface is where your system meets the world - the boundary that defines what's inside vs outside, and how exchanges happen. It's your skin, a website's user interface, or a cell membrane.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">🌐 Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Sensory organs, nervous system, speech/language, facial expressions</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Front counter, menu board, door, website, social media presence</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Heliopause, magnetic field boundaries, gravitational influence zones</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="element-detail" id="detail-6">
+                    <div class="detail-header">
+                        <span class="element-number">7</span>
+                        Environment: The Context
+                    </div>
+                    <div class="detail-description">
+                        Environment is everything outside your system that can influence it. It provides the context, opportunities, threats, and resources that shape how your system behaves and evolves.
+                    </div>
+                    <div class="examples-section">
+                        <div class="examples-title">🌍 Real-World Examples</div>
+                        <div class="example-grid">
+                            <div class="example-card">
+                                <div class="example-title">Your Brain</div>
+                                <div>Cultural context, social relationships, physical health, life experiences</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Coffee Shop</div>
+                                <div>Local economy, competition, weather, suppliers, neighborhood culture</div>
+                            </div>
+                            <div class="example-card">
+                                <div class="example-title">Solar System</div>
+                                <div>Milky Way galaxy, nearby star systems, interstellar medium, cosmic forces</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scale-demo">
+            <h3>🔬 Scale Explorer: From Quantum to Cosmic</h3>
+            <p>The amazing thing about the 7ES Framework? It works at EVERY scale!</p>
+            
+            <input type="range" min="0" max="6" value="3" class="scale-slider" id="scaleSlider">
+            
+            <div class="scale-info" id="scaleInfo">
+                <div class="scale-card">
+                    <h4>🧬 Human Body</h4>
+                    <div>Every organ is a system with all 7 elements working together</div>
+                </div>
+                <div class="scale-card">
+                    <h4>🏢 Organizations</h4>
+                    <div>Companies, governments, schools - all follow the same 7ES pattern</div>
+                </div>
+                <div class="scale-card">
+                    <h4>🌱 Ecosystems</h4>
+                    <div>Forests, oceans, cities - complex systems made of systems</div>
+                </div>
+            </div>
+
+            <div class="recursive-viz">
+                <h4>🔄 Recursive Magic: Systems within Systems</h4>
+                <div class="fractal-demo">
+                    <strong>Galaxy</strong><br>
+                    Contains →
+                </div>
+                <div class="fractal-demo">
+                    <strong>Solar System</strong><br>
+                    Contains →
+                </div>
+                <div class="fractal-demo">
+                    <strong>Planet</strong><br>
+                    Contains →
+                </div>
+                <div class="fractal-demo">
+                    <strong>Ecosystem</strong><br>
+                    Contains →
+                </div>
+                <div class="fractal-demo">
+                    <strong>Organism</strong><br>
+                    Contains →
+                </div>
+                <div class="fractal-demo">
+                    <strong>Cell</strong><br>
+                    Contains →
+                </div>
+                <div class="fractal-demo">
+                    <strong>Atom</strong>
+                </div>
+                <p style="margin-top: 15px; font-style: italic;">Each level has all 7 elements! That's the recursive power of 7ES.</p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="prevElement()">← Previous Element</button>
+            <button class="nav-btn" onclick="nextElement()">Next Element →</button>
+            <button class="nav-btn" onclick="randomExample()">🎲 Random Example</button>
+        </div>
+    </div>
+
+    <script>
+        let currentElement = 0;
+        const totalElements = 7;
+
+        const scaleExamples = [
+            {
+                title: "⚛️ Quantum Level",
+                examples: [
+                    { name: "Electron", desc: "Input: Energy photons → Processing: Quantum state changes → Output: New energy levels" },
+                    { name: "Atom", desc: "Input: Electrons → Processing: Nuclear binding → Output: Chemical properties" },
+                    { name: "Molecule", desc: "Input: Atoms → Processing: Chemical bonds → Output: Molecular behavior" }
+                ]
+            },
+            {
+                title: "🧬 Biological Level",
+                examples: [
+                    { name: "Cell", desc: "Input: Nutrients → Processing: Metabolism → Output: Energy, waste, reproduction" },
+                    { name: "Organ", desc: "Input: Blood, oxygen → Processing: Specialized function → Output: Processed materials" },
+                    { name: "Organism", desc: "Input: Food, air → Processing: Life functions → Output: Movement, reproduction" }
+                ]
+            },
+            {
+                title: "👥 Social Level",
+                examples: [
+                    { name: "Family", desc: "Input: Resources, love → Processing: Care, education → Output: Well-being, growth" },
+                    { name: "Community", desc: "Input: People, resources → Processing: Cooperation → Output: Shared prosperity" },
+                    { name: "Society", desc: "Input: Citizens, resources → Processing: Governance → Output: Order, progress" }
+                ]
+            },
+            {
+                title: "🏢 Organizational Level",
+                examples: [
+                    { name: "Team", desc: "Input: Tasks, skills → Processing: Collaboration → Output: Results, solutions" },
+                    { name: "Company", desc: "Input: Resources, talent → Processing: Business operations → Output: Products, services" },
+                    { name: "Industry", desc: "Input: Companies, regulations → Processing: Market dynamics → Output: Economic value" }
+                ]
+            },
+            {
+                title: "🌍 Ecological Level",
+                examples: [
+                    { name: "Ecosystem", desc: "Input: Sunlight, nutrients → Processing: Food webs → Output: Biodiversity, oxygen" },
+                    { name: "Biosphere", desc: "Input: Solar energy → Processing: Global cycles → Output: Climate stability" },
+                    { name: "Planet", desc: "Input: Solar radiation → Processing: Geological processes → Output: Habitable conditions" }
+                ]
+            },
+            {
+                title: "🪐 Planetary Level",
+                examples: [
+                    { name: "Solar System", desc: "Input: Cosmic matter → Processing: Gravitational dynamics → Output: Orbital stability" },
+                    { name: "Star System", desc: "Input: Hydrogen → Processing: Nuclear fusion → Output: Light, heat, elements" },
+                    { name: "Galaxy", desc: "Input: Gas, dust → Processing: Star formation → Output: Heavy elements, structure" }
+                ]
+            },
+            {
+                title: "🌌 Cosmic Level",
+                examples: [
+                    { name: "Galaxy Cluster", desc: "Input: Galaxies → Processing: Gravitational binding → Output: Large-scale structure" },
+                    { name: "Observable Universe", desc: "Input: Energy → Processing: Cosmic evolution → Output: Matter, space-time" },
+                    { name: "Multiverse", desc: "Input: Quantum fluctuations → Processing: Universe creation → Output: Reality itself" }
+                ]
+            }
+        ];
+
+        function showElement(index) {
+            // Hide all details
+            document.querySelectorAll('.element-detail').forEach(detail => {
+                detail.classList.remove('active');
+            });
+            
+            // Remove active class from all cards
+            document.querySelectorAll('.element-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Show selected detail
+            document.getElementById(`detail-${index}`).classList.add('active');
+            document.querySelector(`[data-element="${index}"]`).classList.add('active');
+            
+            currentElement = index;
+        }
+
+        function nextElement() {
+            currentElement = (currentElement + 1) % totalElements;
+            showElement(currentElement);
+        }
+
+        function prevElement() {
+            currentElement = (currentElement - 1 + totalElements) % totalElements;
+            showElement(currentElement);
+        }
+
+        function randomExample() {
+            const randomIndex = Math.floor(Math.random() * totalElements);
+            showElement(randomIndex);
+        }
+
+        function updateScaleInfo() {
+            const slider = document.getElementById('scaleSlider');
+            const scaleInfo = document.getElementById('scaleInfo');
+            const scaleIndex = parseInt(slider.value);
+            const scaleData = scaleExamples[scaleIndex];
+            
+            scaleInfo.innerHTML = scaleData.examples.map(example => `
+                <div class="scale-card">
+                    <h4>${scaleData.title.split(' ')[0]} ${example.name}</h4>
+                    <div>${example.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        // Event listeners
+        document.querySelectorAll('.element-card').forEach((card, index) => {
+            card.addEventListener('click', () => showElement(index));
+        });
+
+        document.getElementById('scaleSlider').addEventListener('input', updateScaleInfo);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextElement();
+            if (e.key === 'ArrowLeft') prevElement();
+            if (e.key === ' ') {
+                e.preventDefault();
+                randomExample();
+            }
+        });
+
+        // Initialize
+        updateScaleInfo();
+    </script>
+</body>
+</html>
